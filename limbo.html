@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .main {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 700px;
+      height: 300px;
+      /* border: 1px solid black; */
+      display: flex;
+    }
+
+    .key {
+      position: absolute;
+      width: 15vh;
+      height: 15vh;
+      border-radius: 1vh;
+      border: 5px solid black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 250%;
+      font-family: 'Courier New', Courier, monospace;
+      background: white;
+      color: transparent;
+      user-select: none;
+    }
+
+    button {
+      position: absolute;
+      top: 1%;
+      left: 1%;
+    }
+
+    @keyframes focus {
+      0% {
+        background: white;
+      }
+
+      50% {
+        background: black;
+      }
+
+      100% {
+        background: white;
+      }
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <button>Start</button>
+  <div class="main">
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+  </div>
+  <audio controls>
+    <source src="Isolation.mp3" type="audio/mpeg">
+  </audio>
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+  <script>
+    $(document).ready(function () {
+      const box = $('.key');
+      var topValue, leftValue;
+      var LimboKey = [0, 0, 0, 0, 0, 0, 0, 0];
+      LimboKey[Math.floor(Math.random() * 8)] = 1;
+      var space = 5;
+      for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < 4; j++) {
+          box.eq(j + (i * 4)).text(j + (i * 4));
+
+          box.eq(j + (i * 4)).click(function () {
+            if (LimboKey[j + (i * 4)] == 1) {
+              alert('Đúng rồi')
+            } else {
+              alert('Sai')
+            }
+          })
+
+          topValue = space * (i + 1) + 15 * i;
+          leftValue = space * (j + 1) + 15 * j;
+          box.eq(j + (i * 4)).css({
+            top: `${topValue}vh`,
+            left: `${leftValue}vh`
+          })
+        }
+      }
+      var LimboIndex = [0, 1, 2, 3, 4, 5, 6, 7];
+      $('button').click(function () {
+
+        box.eq(LimboKey.indexOf(1)).css({
+          animation: 'focus 1s'
+        })
+
+        const audio = $('audio')[0];
+        audio.currentTime = 180;
+        audio.play();
+
+        setTimeout(function () {
+          Limbo();
+        }, 1300)
+
+      })
+      function Limbo() {
+        box.eq(LimboKey.indexOf(1)).css({
+          animation: 'none'
+        })
+        var LimboSort = LimboIndex;
+        for (let i = 0; i < 32; i++) {
+          LimboSort.sort(() => Math.random() - 0.5);
+          for (let i in LimboSort) {
+            if (LimboSort[i] < 4 && LimboSort[i] >= 0) {
+              topValue = space;
+              leftValue = space * (LimboSort[i] + 1) + 15 * (LimboSort[i]);
+            } else if (LimboSort[i] < 8 && LimboSort[i] >= 4) {
+              topValue = (space * 2) + 15;
+              leftValue = space * (LimboSort[i] - 3) + 15 * (LimboSort[i] - 4);
+            }
+
+            box.eq(i).animate({
+              top: topValue + 'vh',
+              left: leftValue + 'vh'
+            }, 300);
+          }
+        }
+      }
+
+    })
+
+
+  </script>
+</body>
+
+</html>
